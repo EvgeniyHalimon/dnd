@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import './App.css';
+import { Boards } from './Boards';
 import { Card } from './Card';
 
 
@@ -49,9 +50,10 @@ function App() {
   //   currentBoard.items.splice(currentIndex, 1)
   //   setBoards([...boards])
   // }
+  const board = [{id: 1, title: 'board-1', boardDragId: '1'}, {id: 2, title: 'board-2', boardDragId: '2'},]
+  const arr = [{id:1, title: '1', dragId: `1`, boardId: '1'}, {id:2, title: '2', dragId: `2`, boardId: '1'}, {id:3, title: '3', dragId: `3`, boardId: '1'}, 
+  {id:4, title: '4', dragId: `4`,  boardId: '2'}, {id:5, title: '5', dragId: `5`, boardId: '2'}, {id:6, title: '6', dragId: `6`,  boardId: '2'}]
   
-  const arr = [{id:1, title: '1', dragId: `1`}, {id:2, title: '2', dragId: `2`}, {id:3, title: '3', dragId: `3`}]
-  const arr1 = [{id:4, title: '4', dragId: `4`}, {id:5, title: '5', dragId: `5`}, {id:6, title: '6', dragId: `6`}]
   const onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result
     console.log("🚀 ~ file: App.js ~ line 55 ~ onDragEnd ~ draggableId", draggableId)
@@ -60,52 +62,41 @@ function App() {
     console.log("🚀 ~ file: Board.tsx ~ line 61 ~ onDragEnd ~ destination.index", destination)
 
     if (!destination) {
-      return;
+      return
     }
 
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
-    ) {
-      return;
-    }
+      ) {
+        return
+      }
 
-    if (source.droppableId === 'droppable-1') {
-      const find = arr.find((board) => {
-        return draggableId == board.dragId
+  console.log("🚀 ~ file: App.js ~ line 70 ~ onDragEnd ~ source.droppableId", source.droppableId == destination.droppableId)
+  console.log("🚀", destination.droppableId)
+  console.log("🚀🚀", source.droppableId)
+    if(destination.droppableId !== source.droppableId){
+      const find = arr.find((card) => {
+        return  draggableId == card.dragId
       })
+      console.log("🚀 ~ file: Board.tsx ~ line 68 ~ find ~ find", find)
       arr.splice(source.index, 1)
-      arr.splice(destination.index, 0, find)
+      arr.splice(destination.index, 0, {...find, boardId: destination.droppableId})
+      console.log("🚀 ~ file: App.js ~ line 85 ~ onDragEnd ~ board", arr)
+      
     }
 
-    if (source.droppableId === 'droppable-2') {
-      const find = arr1.find((board) => {
-        return draggableId == board.dragId
+    if(destination.droppableId === source.droppableId){
+      const find = arr.find((card) => {
+        return  draggableId == card.dragId
       })
-      arr1.splice(source.index, 1)
-      arr1.splice(destination.index, 0, find)
+      console.log("🚀 ~ file: Board.tsx ~ line 68 ~ find ~ find", find)
+      arr.splice(source.index, 1)
+      arr.splice(destination.index, 0, {...find, boardId: destination.droppableId})
+      console.log("🚀 ~ file: App.js ~ line 85 ~ onDragEnd ~ board", arr)
+      
     }
 
-    // if(source.droppableId !== destination.droppableId){
-    //   const find = arr.find((board) => {
-    //     return draggableId == board.dragId
-    //   })
-    //   console.log("🚀 ~ file: App.js ~ line 94 ~ find ~ find", find)
-    //   arr.splice(source.index, 1)
-    //   arr1.splice(destination.index, 0, find)
-    // } else {
-    //   const find = arr1.find((board) => {
-    //     return draggableId == board.dragId
-    //   })
-    //   console.log("🚀 ~ file: App.js ~ line 94 ~ find ~ find", find)
-    //   arr1.splice(source.index, 1)
-    //   arr.splice(destination.index, 0, find)
-    // }
-    console.log("🚀 ~ file: App.js ~ line 104 ~ onDragEnd ~ arr", arr)
-    console.log("🚀 ~ file: App.js ~ line 103 ~ onDragEnd ~ arr1", arr1)
-    
-    console.log("🚀 ~ file: App.js ~ line 74 ~ onDragEnd ~ source.droppableId", source.droppableId)
-    console.log("🚀 ~ file: App.js ~ line 89 ~ onDragEnd ~ destination.droppableId", destination.droppableId)
   }
 
 
@@ -113,26 +104,9 @@ function App() {
     <div className="App">
       <DragDropContext onDragEnd={onDragEnd}>
         <div className='wrapper'>
-          <Droppable droppableId="droppable-1" type="list" direction="vertical">
-                  {(provided) => (
-                    <div className='board' ref={provided.innerRef} {...provided.droppableProps}>
-                      {arr.map((card, index) => 
-                        <Card card={card} index={index} key={index}/>
-                      )}
-                      {provided.placeholder}
-                    </div> 
-                  )}
-          </Droppable>
-          <Droppable droppableId="droppable-2" type="list" direction="vertical">
-                  {(provided) => (
-                    <div className='board' ref={provided.innerRef} {...provided.droppableProps}>
-                      {arr1.map((card, index) => 
-                        <Card card={card} index={index} key={index}/>
-                      )}
-                      {provided.placeholder}
-                    </div> 
-                  )}
-          </Droppable>
+          {board.map((item, index) =>
+            <Boards board={item} index={index} key={index} cards={arr}/>
+          )}
         </div>
       </DragDropContext>
     </div>
