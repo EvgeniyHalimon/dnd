@@ -4,14 +4,19 @@
   justify-content: center;
 }
 
-.App div {
+.board{
+  width: 200px;
   border: 1px solid pink;
   border-radius: 20px;
-  margin-right: 20px;
-  width: 200px;
 }
 
 .card{
   border: 1px solid pink;
   border-radius: 20px;
+  width: 100px;
+  margin-bottom: 10px;
+}
+
+.wrapper{
+  display: flex;
 }
