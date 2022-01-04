@@ -107,9 +107,6 @@ function App() {
         arr.splice(destination.index, 0, {...find, boardId: destination.droppableId.slice(0, -1)})
       }
     }
-    if(destination.droppableId === 'board'){
-      console.log(1)
-    }
   }
 
 
@@ -120,12 +117,12 @@ function App() {
                   {(provided) => (
                     <div className='wrapper' ref={provided.innerRef} {...provided.droppableProps}>
                       {board.map((item, index) =>
-                            <Draggable draggableId={item.boardDragId} index={index} key={item.boardDragId}>
-                            {(provided) => (
-                                <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                  <Boards board={item} index={index} key={index} cards={arr}/>
-                                </div>
-                            )}
+                        <Draggable draggableId={item.boardDragId} index={index} key={item.boardDragId}>
+                          {(provided) => (
+                              <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                <Boards board={item} index={index} key={index} cards={arr}/>
+                              </div>
+                          )}
                         </Draggable>
                       )}
                     {provided.placeholder}
@@ -138,29 +135,3 @@ function App() {
 }
 
 export default App;
-
-
-        
-
-{/* {boards.map((board, index) => 
-        <div 
-          key={index}
-          draggable={true}
-          onDragOver={(e) => dragOverHandler(e)}
-          
-        >
-          <h1>{board.title}</h1>
-          {board.items.map((card, index) =>
-            <p
-              className="card" 
-              key={index}
-              draggable={true}
-              onDragOver={(e) => dragOverHandler(e)}
-              onDragLeave={(e) => dragLeaveHandler(e)}
-              onDragStart={(e) => dragStartHandler(e, board, card)}
-              onDragEnd={(e) => dragEndHandler(e)}
-              onDrop={(e) => dropHandler(e, board, card)}
-            >{card.title}</p>
-          )}
-        </div>
-      )} */}
