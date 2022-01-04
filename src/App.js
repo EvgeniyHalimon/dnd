@@ -50,7 +50,7 @@ function App() {
   //   currentBoard.items.splice(currentIndex, 1)
   //   setBoards([...boards])
   // }
-  const board = [{id: 1, title: 'board-1', boardDragId: '1'}, {id: 2, title: 'board-2', boardDragId: '2'},]
+  const board = [{id: 1, title: 'board-1', boardDragId: '1q'}, {id: 2, title: 'board-2', boardDragId: '2q'},]
   const arr = [{id:1, title: '1', dragId: `1`, boardId: '1'}, {id:2, title: '2', dragId: `2`, boardId: '1'}, {id:3, title: '3', dragId: `3`, boardId: '1'}, 
   {id:4, title: '4', dragId: `4`,  boardId: '2'}, {id:5, title: '5', dragId: `5`, boardId: '2'}, {id:6, title: '6', dragId: `6`,  boardId: '2'}]
   
@@ -59,7 +59,7 @@ function App() {
     console.log("🚀 ~ file: App.js ~ line 55 ~ onDragEnd ~ draggableId", draggableId)
     console.log("🚀 ~ file: Board.tsx ~ line 59 ~ onDragEnd ~ source.index", source.index)
     
-    console.log("🚀 ~ file: Board.tsx ~ line 61 ~ onDragEnd ~ destination.index", destination)
+    console.log("🚀 ~ file: Board.tsx ~ line 61 ~ onDragEnd ~ destination", destination)
 
     if (!destination) {
       return
@@ -72,48 +72,75 @@ function App() {
         return
       }
 
-  console.log("🚀 ~ file: App.js ~ line 70 ~ onDragEnd ~ source.droppableId", source.droppableId == destination.droppableId)
-  console.log("🚀", destination.droppableId)
-  console.log("🚀🚀", source.droppableId)
-    if(destination.droppableId !== source.droppableId){
-      const find = arr.find((card) => {
-        return  draggableId == card.dragId
-      })
-      console.log("🚀 ~ file: Board.tsx ~ line 68 ~ find ~ find", find)
-      arr.splice(source.index, 1)
-      arr.splice(destination.index, 0, {...find, boardId: destination.droppableId})
-      console.log("🚀 ~ file: App.js ~ line 85 ~ onDragEnd ~ board", arr)
-      
-    }
+    console.log("🚀 ~ file: App.js ~ line 70 ~ onDragEnd ~ source.droppableId", source.droppableId == destination.droppableId)
+    console.log("🚀", destination.droppableId)
+    console.log("🚀🚀", source.droppableId)
 
-    if(destination.droppableId === source.droppableId){
-      const find = arr.find((card) => {
-        return  draggableId == card.dragId
-      })
-      console.log("🚀 ~ file: Board.tsx ~ line 68 ~ find ~ find", find)
-      arr.splice(source.index, 1)
-      arr.splice(destination.index, 0, {...find, boardId: destination.droppableId})
-      console.log("🚀 ~ file: App.js ~ line 85 ~ onDragEnd ~ board", arr)
-      
-    }
+    
 
+    if(type === 'list'){
+      const find = board.find((board) => {
+        return  draggableId == board.boardDragId
+      })
+      console.log("🚀 ~ file: App.js ~ line 102 ~ find ~ find", find)
+      board.splice(source.index, 1)
+      board.splice(destination.index, 0, find)
+      console.log("🚀 ~ file: App.js ~ line 108 ~ onDragEnd ~ boards", board)
+    } else {
+      if(destination.droppableId !== source.droppableId){
+        console.log('case 1')
+        const find = arr.find((card) => {
+          return  draggableId == card.dragId
+        })
+        arr.splice(source.index, 1)
+        arr.splice(destination.index, 0, {...find, boardId: destination.droppableId.slice(0, -1)})
+        console.log("🚀 ~ file: App.js ~ line 96 ~ onDragEnd ~ arr", arr)
+      }
+  
+      if(destination.droppableId === source.droppableId){
+        console.log('case 2')
+        const find = arr.find((card) => {
+          return  draggableId == card.dragId
+        })
+        
+        arr.splice(source.index, 1)
+        arr.splice(destination.index, 0, {...find, boardId: destination.droppableId.slice(0, -1)})
+      }
+    }
+    if(destination.droppableId === 'board'){
+      console.log(1)
+    }
   }
 
 
   return (
     <div className="App">
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className='wrapper'>
-          {board.map((item, index) =>
-            <Boards board={item} index={index} key={index} cards={arr}/>
-          )}
-        </div>
+                <Droppable droppableId={'board'} type='list' direction="horizontal">
+                  {(provided) => (
+                    <div className='wrapper' ref={provided.innerRef} {...provided.droppableProps}>
+                      {board.map((item, index) =>
+                            <Draggable draggableId={item.boardDragId} index={index} key={item.boardDragId}>
+                            {(provided) => (
+                                <div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                  <Boards board={item} index={index} key={index} cards={arr}/>
+                                </div>
+                            )}
+                        </Draggable>
+                      )}
+                    {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
       </DragDropContext>
     </div>
   );
 }
 
 export default App;
+
+
+        
 
 {/* {boards.map((board, index) => 
         <div 
